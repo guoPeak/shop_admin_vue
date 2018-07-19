@@ -6,7 +6,7 @@ import Home from '@/components/home/Home'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -23,3 +23,17 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  // console.log('访问了页面', to, from)
+
+  if (to.path === '/login') return next()
+
+  if (localStorage.getItem('token')) {
+    next()
+  } else {
+    next('/login')
+  }
+})
+
+export default router
