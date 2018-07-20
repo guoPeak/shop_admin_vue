@@ -18,16 +18,16 @@
     <el-button type="success" plain @click="dialogFormVisible = true">添加用户</el-button>
     <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
       <el-form ref="addUserForm" :model="addUserForm" :rules="rules" label-width="80px" status-icon>
-        <el-form-item label="用户名">
+        <el-form-item label="用户名" prop="username">
           <el-input v-model="addUserForm.username"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="addUserForm.password"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱">
+        <el-form-item label="邮箱" prop="email">
           <el-input v-model="addUserForm.email"></el-input>
         </el-form-item>
-        <el-form-item label="手机">
+        <el-form-item label="手机" prop="mobile">
           <el-input v-model="addUserForm.mobile"></el-input>
         </el-form-item>
       </el-form>

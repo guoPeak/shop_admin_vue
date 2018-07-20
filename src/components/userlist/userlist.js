@@ -2,6 +2,8 @@
 import axios from 'axios'
 
 export default {
+  name: 'UserList',
+
   data () {
     return {
       searchText: '',
@@ -49,7 +51,7 @@ export default {
           },
           headers: { Authorization: localStorage.getItem('token') }
         }).then((res) => {
-          console.log(res)
+          // console.log(res)
           const { data, meta } = res.data
           if (meta.status === 200) {
             this.tableData = data.users
