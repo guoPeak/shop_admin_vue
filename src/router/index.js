@@ -4,6 +4,8 @@ import Login from '@/components/login/Login'
 
 import Home from '@/components/home/Home'
 
+import UserList from '@/components/userlist'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -19,7 +21,10 @@ const router = new Router({
 
     {
       path: '/home',
-      component: Home
+      component: Home,
+      children: [
+        { path: '/userlist', component: UserList }
+      ]
     }
   ]
 })
