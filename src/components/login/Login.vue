@@ -5,7 +5,7 @@
         <el-input v-model="loginForm.username"></el-input>
       </el-form-item>
       <el-form-item label="密码:" prop="password">
-        <el-input type="password" v-model="loginForm.password"></el-input>
+        <el-input type="password" v-model="loginForm.password" @keyup.enter.native="login"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="login">登录</el-button>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 
 export default {
   data () {
@@ -56,8 +56,8 @@ export default {
     },
 
     handleLogin () {
-      axios
-        .post('http://localhost:8888/api/private/v1/login', this.loginForm)
+      this.axios
+        .post('/login', this.loginForm)
         .then(res => {
           // console.log(res)
           if (res.data.meta.status === 200) {

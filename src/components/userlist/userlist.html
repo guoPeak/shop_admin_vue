@@ -15,27 +15,7 @@
   </el-col>
   <!-- 添加用户按钮 -->
   <el-col :span="2">
-    <el-button type="success" plain @click="dialogFormVisible = true">添加用户</el-button>
-    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
-      <el-form ref="addUserForm" :model="addUserForm" :rules="rules" label-width="80px" status-icon>
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="addUserForm.username"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="addUserForm.password"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="addUserForm.email"></el-input>
-        </el-form-item>
-        <el-form-item label="手机" prop="mobile">
-          <el-input v-model="addUserForm.mobile"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addUserInfo">确 定</el-button>
-      </div>
-    </el-dialog>
+    <el-button type="success" plain @click="addUserdialog = true">添加用户</el-button>
   </el-col>
   </el-row>
 
@@ -63,15 +43,15 @@
     label="用户状态">
     <template slot-scope="scope">
       <el-switch
-        v-model="scope.row.mg_state">
+        v-model="scope.row.mg_state" @change="changeStatus(scope.row)">
       </el-switch>
     </template>
   </el-table-column>
   <el-table-column
     label="操作">
     <template slot-scope="scope">
-      <el-button size="mini" type="primary" plain icon="el-icon-edit"></el-button>
-      <el-button size="mini" type="danger" plain icon="el-icon-delete"></el-button>
+      <el-button size="mini" type="primary" plain icon="el-icon-edit" @click="getUserInfoById(scope.row.id)"></el-button>
+      <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="deleteUser(scope.row.id)"></el-button>
       <el-button size="mini" type="success" plain icon="el-icon-check">分配角色</el-button>
     </template>
   </el-table-column>
@@ -83,7 +63,48 @@
     layout="prev, pager, next"
     :total="total"
     :page-size="pageSize"
+    :current-page.sync="currentPage"
     @current-change="getCurUserList">
   </el-pagination>
 
+  <!-- 添加用户的模态框 -->
+  <el-dialog title="添加用户" :visible.sync="addUserdialog">
+    <el-form ref="addUserForm" :model="addUserForm" :rules="addRules" label-width="80px" status-icon>
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="addUserForm.username"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input type="password" v-model="addUserForm.password"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="addUserForm.email"></el-input>
+      </el-form-item>
+      <el-form-item label="手机" prop="mobile">
+        <el-input v-model="addUserForm.mobile"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="addUserdialog = false">取 消</el-button>
+      <el-button type="primary" @click="addUserInfo">确 定</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 编辑用户的模态框 -->
+  <el-dialog title="编辑用户" :visible.sync="editUserdialog">
+    <el-form ref="editUserForm" :model="editUserForm" :rules="addRules" label-width="80px" status-icon>
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="editUserForm.username" disabled></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="editUserForm.email"></el-input>
+      </el-form-item>
+      <el-form-item label="手机" prop="mobile">
+        <el-input v-model="editUserForm.mobile"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="editUserdialog = false">取 消</el-button>
+      <el-button type="primary" @click="editUserInfo(editUserForm.id)">确 定</el-button>
+    </div>
+  </el-dialog>
 </div>

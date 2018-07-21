@@ -24,13 +24,14 @@
             class="el-menu-vertical-demo"
             background-color="#545C64"
             text-color="#fff"
-            active-text-color="#ffd04b">
+            active-text-color="#ffd04b"
+            @select="handleSelect">
             <el-submenu index="1">
               <template slot="title">
                 <i class="el-icon-location"></i>
                 <span>用户管理</span>
               </template>
-              <el-menu-item index="1-1">
+              <el-menu-item index="/userlist">
                 <i class="el-icon-menu"></i>
                 <span>用户列表</span>
               </el-menu-item>
@@ -40,11 +41,11 @@
                 <i class="el-icon-location"></i>
                 <span>权限管理</span>
               </template>
-              <el-menu-item index="2-1">
+              <el-menu-item index="/rolelist">
                 <i class="el-icon-menu"></i>
                 <span>角色列表</span>
               </el-menu-item>
-              <el-menu-item index="2-2">
+              <el-menu-item index="/permissionlist">
                 <i class="el-icon-menu"></i>
                 <span>权限列表</span>
               </el-menu-item>
@@ -83,6 +84,10 @@ export default {
           duration: 1000
         })
       })
+    },
+
+    handleSelect (index) {
+      this.$router.push(index)
     }
   }
 }
