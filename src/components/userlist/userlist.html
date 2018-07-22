@@ -91,7 +91,7 @@
 
   <!-- 编辑用户的模态框 -->
   <el-dialog title="编辑用户" :visible.sync="editUserdialog">
-    <el-form ref="editUserForm" :model="editUserForm" :rules="addRules" label-width="80px" status-icon>
+    <el-form ref="editUserForm" :model="editUserForm" :rules="editRules" label-width="80px" status-icon>
       <el-form-item label="用户名" prop="username">
         <el-input v-model="editUserForm.username" disabled></el-input>
       </el-form-item>

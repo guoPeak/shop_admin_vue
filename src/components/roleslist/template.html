@@ -1,0 +1,105 @@
+<div class="roleslist">
+  <!-- 面包屑导航 -->
+  <el-breadcrumb separator-class="el-icon-arrow-right">
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item>权限管理</el-breadcrumb-item>
+    <el-breadcrumb-item>角色列表</el-breadcrumb-item>
+  </el-breadcrumb>
+
+  <!-- 添加角色 -->
+  <el-button type="success" class="add-role" plain @click="addRoledialog = true">添加用户</el-button>
+
+  <!-- 表格 -->
+  <el-table :data="tableData" style="width: 100%">
+    <el-table-column type="expand">
+      <template slot-scope="scope">
+        <el-row v-if="scope.row.children.length === 0">
+          <el-col :span="24">暂无权限</el-col>
+        </el-row>
+        <el-row v-else v-for="level1 in scope.row.children" :key="level1.id" class="level1">
+          <!-- 一级 -->
+          <el-col :span="4">
+            <el-tag
+              closable
+              @close="removeRight(scope.row, level1.id)">
+              {{ level1.authName }}
+            </el-tag>
+            <i class="el-icon-arrow-right"></i>
+          </el-col>
+
+          <!-- 二级 -->
+          <el-col :span="20">
+            <el-row v-for="level2 in level1.children" :key="level2.id" class="level2">
+              <el-col :span="4">
+                <el-tag
+                  type="success"
+                  closable
+                  @close="removeRight(scope.row, level2.id)">
+                  {{ level2.authName }}
+                </el-tag>
+                <i class="el-icon-arrow-right"></i>
+              </el-col>
+
+              <!-- 三级 -->
+              <el-col :span="20">
+                <span v-for="level3 in level2.children" :key="level3.id" class="level3">
+                  <el-tag
+                    type="warning"
+                    closable
+                    @close="removeRight(scope.row, level3.id)">
+                    {{ level3.authName }}
+                  </el-tag>
+                </span>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+      </template>
+    </el-table-column>
+    <el-table-column type="index" width="50">
+    </el-table-column>
+    <el-table-column label="角色名称" prop="roleName" width="180">
+    </el-table-column>
+    <el-table-column label="描述" prop="roleDesc" width="180">
+    </el-table-column>
+    <el-table-column label="操作">
+      <template slot-scope="scope">
+        <el-button size="mini" type="primary" plain icon="el-icon-edit" @click="showUserRoleById(scope.row.id)"></el-button>
+        <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="deleteUserRole(scope.row.id)"></el-button>
+        <el-button size="mini" type="success" plain icon="el-icon-check">分配角色</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <!-- 修改角色的模态框 -->
+  <el-dialog title="角色管理" :visible.sync="eidtRoledialog">
+      <el-form :model="editUserForm" label-width="100px" ref="editUserForm" :rules="editRules" status-icon>
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="editUserForm.roleName" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="roleDesc">
+          <el-input v-model="editUserForm.roleDesc" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="eidtRoledialog = false">取 消</el-button>
+        <el-button type="primary" @click="eidtUser(editUserForm.roleId)">确 定</el-button>
+      </div>
+  </el-dialog>
+
+  <!-- 添加角色的模态框 -->
+  <el-dialog title="添加角色" :visible.sync="addRoledialog">
+      <el-form :model="addRoleForm" label-width="100px" ref="addRoleForm" :rules="addRules" status-icon>
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="addRoleForm.roleName" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="roleDesc">
+          <el-input v-model="addRoleForm.roleDesc" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addRoledialog = false">取 消</el-button>
+        <el-button type="primary" @click="addRole">确 定</el-button>
+      </div>
+  </el-dialog>
+</div>

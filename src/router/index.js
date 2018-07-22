@@ -5,6 +5,8 @@ import Login from '@/components/login/Login'
 import Home from '@/components/home/Home'
 
 import UserList from '@/components/userlist'
+import RolesList from '@/components/roleslist'
+import Rightlist from '@/components/rightlist'
 
 Vue.use(Router)
 
@@ -12,7 +14,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/home'
     },
     {
       path: '/login',
@@ -23,7 +25,9 @@ const router = new Router({
       path: '/home',
       component: Home,
       children: [
-        { path: '/userlist', component: UserList }
+        { path: '/userlist', component: UserList },
+        { path: '/roleslist', component: RolesList },
+        { path: '/rightslist', component: Rightlist }
       ]
     }
   ]
