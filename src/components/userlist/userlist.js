@@ -46,12 +46,27 @@ export default {
         mobile: [
           { pattern: /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/, message: '请输入正确的手机号码', trigger: 'blur' }
         ]
-      }
+      },
+
+      assignRolesdialog: false,
+
+      assignRolesForm: {
+        username: '',
+        id: -1
+      },
+
+      allRoles: [],
+      defaultRole: '',
+
+      currentRoleId: ''
     }
   },
 
   created () {
     this.getUserList()
+
+    // 获取所有的分配角色
+    this.getAllRoleRights()
   },
 
   methods: {
@@ -105,7 +120,9 @@ export default {
                   type: 'success',
                   duration: 800
                 })
-                // 刷新列表
+                // 刷新列表 显示最后一页
+                this.total += 1
+                this.currentPage = Math.ceil(this.total / this.pageSize)
                 this.getUserList(this.currentPage)
               } else if (meta.status === 400) {
                 this.$message({
@@ -219,8 +236,14 @@ export default {
                 message: '删除成功',
                 duration: 1000
               })
-              // 刷新列表
-              this.getUserList(this.currentPage, this.searchText)
+              // 刷新列表 如果删除的用户是最后一页且只有一个， 这样删除了最后一页会消失需要去判断 避免删除最后一个显示没有数据
+              if (this.currentPage === Math.ceil(this.total / this.pageSize)) {
+                this.total -= 1
+                this.currentPage = Math.ceil(this.total / this.pageSize)
+                this.getUserList(this.currentPage, this.searchText)
+              } else {
+                this.getUserList(this.currentPage, this.searchText)
+              }
             }
           })
       }).catch(() => {
@@ -230,6 +253,40 @@ export default {
           duration: 1000
         })
       })
+    },
+
+    async getAllRoleRights () {
+      const res = await this.axios.get('roles')
+      // console.log(res)
+      const { meta, data } = res.data
+      if (meta.status === 200) {
+        this.allRoles = data
+      }
+    },
+
+    showAssignRolesDialog (user) {
+      this.assignRolesdialog = true
+      this.assignRolesForm.username = user.username
+      this.assignRolesForm.id = user.id
+      this.defaultRole = user.role_name
+    },
+
+    selectRole (roleId) {
+      // console.log(roleId)
+      this.currentRoleId = roleId
+    },
+
+    async assignRoles () {
+      const res = await this.axios.put(`users/${this.assignRolesForm.id}/role`, {
+        rid: this.currentRoleId
+      })
+      // console.log(res)
+      const { meta } = res.data
+      if (meta.status === 200) {
+        this.assignRolesdialog = false
+        // 刷新当前页
+        this.getUserList(this.currentPage, this.searchText)
+      }
     }
   }
 }

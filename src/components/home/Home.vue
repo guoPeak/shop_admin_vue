@@ -21,7 +21,7 @@
           <el-menu
             default-active="1"
             :unique-opened="true"
-            class="el-menu-vertical-demo"
+            class="el-menu-home"
             background-color="#545C64"
             text-color="#fff"
             active-text-color="#ffd04b"
@@ -119,6 +119,10 @@ export default {
   font-size: 30px;
   text-align: center;
   color: #fff;
+}
+
+.el-menu-home {
+  border-right: none;
 }
 
 .logout {

@@ -52,7 +52,7 @@
     <template slot-scope="scope">
       <el-button size="mini" type="primary" plain icon="el-icon-edit" @click="getUserInfoById(scope.row.id)"></el-button>
       <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="deleteUser(scope.row.id)"></el-button>
-      <el-button size="mini" type="success" plain icon="el-icon-check">分配角色</el-button>
+      <el-button size="mini" type="success" plain icon="el-icon-check" @click="showAssignRolesDialog(scope.row)">分配角色</el-button>
     </template>
   </el-table-column>
   </el-table>
@@ -105,6 +105,31 @@
     <div slot="footer" class="dialog-footer">
       <el-button @click="editUserdialog = false">取 消</el-button>
       <el-button type="primary" @click="editUserInfo(editUserForm.id)">确 定</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 分配角色对话框 -->
+  <el-dialog title="分配角色" :visible.sync="assignRolesdialog">
+    <el-form  :model="assignRolesForm" label-width="80px">
+      <el-form-item label="用户名">
+        <el-input v-model="assignRolesForm.username" disabled></el-input>
+      </el-form-item>
+      <!-- 下拉选中框 -->
+      <el-form-item label="角色列表">
+        <el-select v-model="defaultRole" placeholder="请选择" @change="selectRole">
+          <el-option
+            v-for="item in allRoles"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="assignRolesdialog = false">取 消</el-button>
+      <el-button type="primary" @click="assignRoles">分 配</el-button>
     </div>
   </el-dialog>
 </div>

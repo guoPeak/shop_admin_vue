@@ -7,7 +7,8 @@ export default {
       eidtRoledialog: false,
       editUserForm: {
         roleName: '',
-        roleDesc: ''
+        roleDesc: '',
+        id: 0
       },
       editRules: {
         roleName: [
@@ -23,12 +24,28 @@ export default {
         roleName: [
           { required: true, message: '角色名称不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      assignRightdialog: false,
+
+      allRightsData: [],
+
+      defaultProps: {
+        children: 'children',
+        label: 'authName'
+      },
+
+      // 设置默认选中的值
+      defaultCheckedRights: [],
+
+      currentRoleId: -1
     }
   },
 
   created () {
     this.getRolelist()
+
+    // 在渲染dom之前获取所有权限的数据
+    // this.getAllRights()
   },
 
   methods: {
@@ -42,10 +59,6 @@ export default {
             this.tableData = data
           }
         })
-    },
-
-    removeRight (data, id) {
-      console.log(data, id)
     },
 
     addRole () {
@@ -73,17 +86,11 @@ export default {
       })
     },
 
-    showUserRoleById (id) {
-      // console.log(id)
-      this.axios
-        .get(`roles/${id}`)
-        .then(res => {
-          const { meta, data } = res.data
-          if (meta.status === 200) {
-            this.editUserForm = data
-            this.eidtRoledialog = true
-          }
-        })
+    showEditRoleById (role) {
+      this.editUserForm.roleName = role.roleName
+      this.editUserForm.roleDesc = role.roleDesc
+      this.editUserForm.id = role.id
+      this.eidtRoledialog = true
     },
 
     eidtUser (id) {
@@ -131,6 +138,63 @@ export default {
           duration: 1000
         })
       })
+    },
+
+    // async getAllRights () {
+    //   const res = await this.axios.get('rights/tree')
+    //   // console.log(res)
+    //   const { meta, data } = res.data
+    //   if (meta.status === 200) {
+    //     this.allRightsData = data
+    //   }
+    // },
+
+    async showAssignRights (role) {
+      this.currentRoleId = role.id
+      // 获取该角色的权限数据
+      let checkedRightsId = []
+      role.children.forEach(level1 => {
+        level1.children.forEach(level2 => {
+          level2.children.forEach(level3 => {
+            checkedRightsId.push(level3.id)
+          })
+        })
+      })
+
+      this.defaultCheckedRights = checkedRightsId
+
+      const res = await this.axios.get('rights/tree')
+      // console.log(res)
+      const { meta, data } = res.data
+      if (meta.status === 200) {
+        this.allRightsData = data
+        this.assignRightdialog = true
+      }
+
+      // vue是异步更新dom的 对话框没有显示的时候，是没有渲染到dom中的
+      // this.$nextTick(() => {
+      //   this.$refs.assignTree.setCheckedKeys(checkedRightsId)
+      // })
+    },
+
+    async updateAssignRight () {
+      const checkedRights = this.$refs.assignTree.getCheckedKeys()
+      const halfCheckedRights = this.$refs.assignTree.getHalfCheckedKeys()
+      const AllChecked = [...checkedRights, ...halfCheckedRights]
+      // console.log(checkedRights, halfCheckedRights)
+      // console.log(checked)
+      const rids = AllChecked.join(',')
+      const res = await this.axios.post(`roles/${this.currentRoleId}/rights`, { rids })
+      // 隐藏对话框和重新渲染列表
+      const { meta } = res.data
+      if (meta.status === 200) {
+        this.assignRightdialog = false
+        this.getRolelist()
+      }
+    },
+
+    removeRight (data, id) {
+      console.log(data, id)
     }
   }
 }

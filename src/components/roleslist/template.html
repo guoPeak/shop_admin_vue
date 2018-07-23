@@ -46,7 +46,7 @@
                   <el-tag
                     type="warning"
                     closable
-                    @close="removeRight(scope.row, level3.id)">
+                    @close="removeRight(scope.row.id, level3.id)">
                     {{ level3.authName }}
                   </el-tag>
                 </span>
@@ -64,9 +64,9 @@
     </el-table-column>
     <el-table-column label="操作">
       <template slot-scope="scope">
-        <el-button size="mini" type="primary" plain icon="el-icon-edit" @click="showUserRoleById(scope.row.id)"></el-button>
+        <el-button size="mini" type="primary" plain icon="el-icon-edit" @click="showEditRoleById(scope.row)"></el-button>
         <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="deleteUserRole(scope.row.id)"></el-button>
-        <el-button size="mini" type="success" plain icon="el-icon-check">分配角色</el-button>
+        <el-button size="mini" type="success" plain icon="el-icon-check" @click="showAssignRights(scope.row)">分配权限</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -83,7 +83,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="eidtRoledialog = false">取 消</el-button>
-        <el-button type="primary" @click="eidtUser(editUserForm.roleId)">确 定</el-button>
+        <el-button type="primary" @click="eidtUser(editUserForm.id)">确 定</el-button>
       </div>
   </el-dialog>
 
@@ -101,5 +101,25 @@
         <el-button @click="addRoledialog = false">取 消</el-button>
         <el-button type="primary" @click="addRole">确 定</el-button>
       </div>
+  </el-dialog>
+
+  <!-- 分配权限的对话框 -->
+  <el-dialog title="分配权限" :visible.sync="assignRightdialog">
+    <!-- 树形权限结构 -->
+    <!--  default-expand-all 默认为全部展开 -->
+    <el-tree
+      :data="allRightsData"
+      show-checkbox
+      default-expand-all
+      node-key="id"
+      ref="assignTree"
+      highlight-current
+      :default-checked-keys="defaultCheckedRights"
+      :props="defaultProps">
+    </el-tree>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="assignRightdialog = false">取 消</el-button>
+      <el-button type="primary" @click="updateAssignRight">确 定</el-button>
+    </div>
   </el-dialog>
 </div>
