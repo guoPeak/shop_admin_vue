@@ -26,17 +26,17 @@
             text-color="#fff"
             active-text-color="#ffd04b"
             @select="handleSelect">
-            <el-submenu index="1">
+            <el-submenu :index="level1.id.toString()" v-for="level1 in asideMenu" :key="level1.id">
               <template slot="title">
                 <i class="el-icon-location"></i>
-                <span>用户管理</span>
+                <span>{{ level1.authName }}</span>
               </template>
-              <el-menu-item index="/userlist">
+              <el-menu-item :index="level2.path" v-for="level2 in level1.children" :key="level2.id">
                 <i class="el-icon-menu"></i>
-                <span>用户列表</span>
+                <span>{{ level2.authName }}</span>
               </el-menu-item>
             </el-submenu>
-            <el-submenu index="2">
+            <!-- <el-submenu index="2">
               <template slot="title">
                 <i class="el-icon-location"></i>
                 <span>权限管理</span>
@@ -49,7 +49,7 @@
                 <i class="el-icon-menu"></i>
                 <span>权限列表</span>
               </el-menu-item>
-            </el-submenu>
+            </el-submenu> -->
           </el-menu>
         </el-col>
       </el-aside>
@@ -63,6 +63,15 @@
 <script>
 export default {
 
+  data () {
+    return {
+      asideMenu: []
+    }
+  },
+
+  created () {
+    this.getAsideMenu()
+  },
   methods: {
     logout () {
       this.$confirm('您确认是否要退出？', '提示', {
@@ -88,6 +97,15 @@ export default {
 
     handleSelect (index) {
       this.$router.push(index)
+    },
+
+    async getAsideMenu () {
+      const res = await this.axios.get('menus')
+      // console.log(res)
+      const { meta, data } = res.data
+      if (meta.status === 200) {
+        this.asideMenu = data
+      }
     }
   }
 }

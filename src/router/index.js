@@ -31,9 +31,9 @@ const router = new Router({
       path: '/home',
       component: Home,
       children: [
-        { path: '/userlist', component: UserList },
-        { path: '/roleslist', component: RolesList },
-        { path: '/rightslist', component: Rightlist }
+        { path: '/users', component: UserList },
+        { path: '/roles', component: RolesList },
+        { path: '/rights', component: Rightlist }
       ]
     }
   ]
