@@ -10,6 +10,8 @@ import UserList from '@/components/userlist'
 import RolesList from '@/components/roleslist'
 import Rightlist from '@/components/rightlist'
 import Categories from '@/components/categories'
+import Goods from '@/components/goods'
+import GoodsAdd from '@/components/goods-add'
 
 Vue.use(Router)
 
@@ -35,7 +37,9 @@ const router = new Router({
         { path: '/users', component: UserList },
         { path: '/roles', component: RolesList },
         { path: '/rights', component: Rightlist },
-        { path: '/categories', component: Categories }
+        { path: '/categories', component: Categories },
+        { path: '/goods', component: Goods },
+        { path: '/goods-add', component: GoodsAdd }
       ]
     }
   ]
