@@ -19,14 +19,14 @@
         <!-- 侧边栏导航 -->
         <el-col>
           <el-menu
-            default-active="1"
+            :default-active="$route.path.slice(1)"
             :unique-opened="true"
+            :router="true"
             class="el-menu-home"
             background-color="#545C64"
             text-color="#fff"
-            active-text-color="#ffd04b"
-            @select="handleSelect">
-            <el-submenu :index="level1.id.toString()" v-for="level1 in asideMenu" :key="level1.id">
+            active-text-color="#ffd04b">
+            <el-submenu :index="level1.path" v-for="level1 in asideMenu" :key="level1.id">
               <template slot="title">
                 <i class="el-icon-location"></i>
                 <span>{{ level1.authName }}</span>
@@ -95,9 +95,9 @@ export default {
       })
     },
 
-    handleSelect (index) {
-      this.$router.push(index)
-    },
+    // handleSelect (index) {
+    //   this.$router.push(index)
+    // },
 
     async getAsideMenu () {
       const res = await this.axios.get('menus')

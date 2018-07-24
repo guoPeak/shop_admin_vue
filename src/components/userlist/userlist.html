@@ -116,7 +116,7 @@
       </el-form-item>
       <!-- 下拉选中框 -->
       <el-form-item label="角色列表">
-        <el-select v-model="defaultRole" placeholder="请选择" @change="selectRole">
+        <el-select v-model="assignRolesForm.roleId" placeholder="请选择">
           <el-option
             v-for="item in allRoles"
             :key="item.id"

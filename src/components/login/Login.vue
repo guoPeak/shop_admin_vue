@@ -71,7 +71,7 @@ export default {
             })
           } else {
             this.$message({
-              message: '登录失败，用户名或者密码错误',
+              message: res.data.meta.msg,
               type: 'error',
               duration: 1500
             })

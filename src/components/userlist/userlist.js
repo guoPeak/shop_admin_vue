@@ -52,13 +52,11 @@ export default {
 
       assignRolesForm: {
         username: '',
-        id: -1
+        roleId: -1,
+        userId: -1
       },
 
-      allRoles: [],
-      defaultRole: '',
-
-      currentRoleId: ''
+      allRoles: []
     }
   },
 
@@ -264,21 +262,26 @@ export default {
       }
     },
 
-    showAssignRolesDialog (user) {
-      this.assignRolesdialog = true
+    async showAssignRolesDialog (user) {
       this.assignRolesForm.username = user.username
-      this.assignRolesForm.id = user.id
-      this.defaultRole = user.role_name
-    },
+      this.assignRolesForm.userId = user.id
 
-    selectRole (roleId) {
-      // console.log(roleId)
-      this.currentRoleId = roleId
+      const res = await this.axios.get(`users/${user.id}`)
+      const { meta, data } = res.data
+      if (meta.status === 200) {
+        if (data.rid === -1) {
+          this.assignRolesForm.roleId = ''
+        } else {
+          this.assignRolesForm.roleId = data.rid
+        }
+        this.assignRolesdialog = true
+      }
     },
 
     async assignRoles () {
-      const res = await this.axios.put(`users/${this.assignRolesForm.id}/role`, {
-        rid: this.currentRoleId
+      const { userId, roleId } = this.assignRolesForm
+      const res = await this.axios.put(`users/${userId}/role`, {
+        rid: roleId
       })
       // console.log(res)
       const { meta } = res.data

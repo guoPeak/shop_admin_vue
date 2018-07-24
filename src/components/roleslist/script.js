@@ -193,8 +193,14 @@ export default {
       }
     },
 
-    removeRight (data, id) {
-      console.log(data, id)
+    async removeRight (role, rightId) {
+      // console.log(role, rightId)
+      const res = await this.axios.delete(`roles/${role.id}/rights/${rightId}`)
+      // console.log(res)
+      const { meta, data } = res.data
+      if (meta.status === 200) {
+        role.children = data
+      }
     }
   }
 }
