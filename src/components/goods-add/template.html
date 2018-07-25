@@ -1,8 +1,74 @@
 <div class="goods-add">
   <!-- 步骤条 -->
-  <el-steps :active="1" finish-status="success">
-    <el-step title="已完成"></el-step>
-    <el-step title="进行中"></el-step>
-    <el-step title="步骤 3"></el-step>
+  <el-steps :active="activeStep" finish-status="success">
+    <el-step title="已完成" description="基本信息"></el-step>
+    <el-step title="进行中" description="商品图片"></el-step>
+    <el-step title="步骤 3" description="商品内容"></el-step>
   </el-steps>
+
+  <!-- 表单 -->
+  <el-tabs tab-position="left" @tab-click="changeTabActive" v-model="activeName">
+    <el-tab-pane label="基本信息" name="1">
+      <!-- 表单 -->
+      <el-form :model="addGoodsForm" :rules="addGoodsRules" ref="addGoodsForm" label-width="100px" status-icon>
+        <el-form-item label="商品名称" prop="goods_name">
+          <el-input v-model="addGoodsForm.goods_name"></el-input>
+        </el-form-item>
+        <el-form-item label="商品价格" prop="goods_price">
+          <el-input v-model="addGoodsForm.goods_price"></el-input>
+        </el-form-item>
+        <el-form-item label="商品重量" prop="goods_weight">
+          <el-input v-model="addGoodsForm.goods_weight"></el-input>
+        </el-form-item>
+        <el-form-item label="商品数量" prop="goods_number">
+          <el-input v-model="addGoodsForm.goods_number"></el-input>
+        </el-form-item>
+        <el-form-item label="商品分类" prop="goods_cat">
+        <el-cascader
+          :props="{
+          value: 'cat_id',
+          label: 'cat_name'
+        }"
+        change-on-select
+        :options="allCateMenu"
+        v-model="addGoodsForm.goods_cat"></el-cascader>
+        </el-form-item>
+        <el-form-item label="是否促销" prop="is_promote">
+          <el-radio-group v-model="addGoodsForm.is_promote">
+            <el-radio label="是"></el-radio>
+            <el-radio label="否"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="next">下一步</el-button>
+        </el-form-item>
+      </el-form>
+    </el-tab-pane>
+    <el-tab-pane label="商品图片" name="2">
+      <el-upload
+        class="upload-goods"
+        action="http://localhost:8888/api/private/v1/upload"
+        :headers="headers"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :auto-upload="isAutoUp"
+        :on-success="afterUpLoad"
+        :limit="3"
+        :on-exceed="handleExceed">
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
+      <el-button type="primary" @click="next">下一步</el-button>
+    </el-tab-pane>
+    <el-tab-pane label="商品内容" name="3">
+    <quill-editor v-model="goods_introduce" ref="myQuillEditor">
+    </quill-editor>
+    <!-- <div class="quill-code">
+      <code class="hljs" v-html="contentCode"></code>
+    </div> -->
+    <el-button type="primary" @click="submitAddGoods">确 定</el-button>
+    </el-tab-pane>
+  </el-tabs>
 </div>
