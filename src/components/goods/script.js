@@ -12,12 +12,32 @@ export default {
   },
 
   created () {
-    this.getGoodsList()
+    this.getGoodsList(this.$route.query.page, this.$route.query.search)
+  },
+
+  watch: {
+    $route (to) {
+      // 监视路由变化来改变当前页
+      this.getGoodsList(to.query.page, to.query.search)
+    }
   },
 
   filters: {
     date (msg) {
-      return new Date(msg).toLocaleString()
+      function checkDay (n) {
+        return n > 10 ? n : '0' + n
+      }
+
+      const date = new Date(msg)
+      const year = date.getFullYear()
+      const month = checkDay(date.getMonth() + 1)
+      const day = checkDay(date.getDate())
+      const hour = checkDay(date.getHours())
+      const minute = checkDay(date.getMinutes())
+      const second = checkDay(date.getSeconds())
+
+      const newDate = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
+      return newDate
     }
   },
 
@@ -34,15 +54,29 @@ export default {
       if (meta.status === 200) {
         this.goodsData = data.goods
         this.total = data.total
+        this.currentPage = pagenum - 0 // 让其得到数字
       }
     },
 
     getCurPageGoods (curpage) {
-      this.getGoodsList(curpage)
+      // this.getGoodsList(curpage)
+      this.$router.push({
+        path: '/goods',
+        query: {
+          search: this.searchText,
+          page: curpage
+        }
+      })
     },
 
     goodsSearch () {
-      this.getGoodsList(1, this.searchText)
+      this.$router.push({
+        path: '/goods',
+        query: {
+          search: this.searchText,
+          page: 1
+        }
+      })
       this.currentPage = 1
     },
 

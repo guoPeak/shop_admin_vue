@@ -29,7 +29,6 @@
           value: 'cat_id',
           label: 'cat_name'
         }"
-        change-on-select
         :options="allCateMenu"
         v-model="addGoodsForm.goods_cat"></el-cascader>
         </el-form-item>
@@ -49,25 +48,20 @@
         class="upload-goods"
         action="http://localhost:8888/api/private/v1/upload"
         :headers="headers"
-        :on-preview="handlePreview"
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
         multiple
-        :auto-upload="isAutoUp"
-        :on-success="afterUpLoad"
+        :on-success="handleSuccess"
         :limit="3"
-        :on-exceed="handleExceed">
+        :on-exceed="handleExceed"
+        list-type="picture">
         <el-button size="small" type="primary">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
       </el-upload>
       <el-button type="primary" @click="next">下一步</el-button>
     </el-tab-pane>
     <el-tab-pane label="商品内容" name="3">
-    <quill-editor v-model="goods_introduce" ref="myQuillEditor">
-    </quill-editor>
-    <!-- <div class="quill-code">
-      <code class="hljs" v-html="contentCode"></code>
-    </div> -->
+    <quill-editor v-model="addGoodsForm.goods_introduce"></quill-editor>
     <el-button type="primary" @click="submitAddGoods">确 定</el-button>
     </el-tab-pane>
   </el-tabs>

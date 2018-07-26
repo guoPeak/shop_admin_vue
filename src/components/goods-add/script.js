@@ -1,5 +1,5 @@
 import { quillEditor } from 'vue-quill-editor'
-// import hljs from ''
+
 // require styles
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -18,27 +18,27 @@ export default {
         goods_number: '',
         goods_cat: [],
         pics: [],
-        is_promote: '否'
+        is_promote: '否',
+        goods_introduce: ''
       },
 
       allCateMenu: [],
 
       addGoodsRules: {
         goods_name: [
-          { required: true, message: '商品名称不能为空', trigger: 'blur' },
-          { min: 4, max: 8, message: '长度在 4 到 8 个字符', trigger: 'blur' }
+          { required: true, message: '商品名称不能为空', trigger: 'blur' }
         ],
         goods_price: [
-          { required: true, message: '商品价格不能为空', trigger: 'blur' },
-          { type: 'number', message: '价格由数字组成', trigger: 'blur' }
+          { required: true, message: '商品价格不能为空', trigger: 'blur' }
+          // { type: 'number', message: '价格由数字组成', trigger: 'blur' }
         ],
         goods_number: [
-          { required: true, message: '商品数量不能为空', trigger: 'blur' },
-          { type: 'number', message: '商品数量由数字组成', trigger: 'blur' }
+          { required: true, message: '商品数量不能为空', trigger: 'blur' }
+          // { type: 'number', message: '商品数量由数字组成', trigger: 'blur' }
         ],
         goods_weight: [
-          { required: true, message: '商品重量不能为空', trigger: 'blur' },
-          { type: 'number', message: '商品重量由数字组成', trigger: 'blur' }
+          { required: true, message: '商品重量不能为空', trigger: 'blur' }
+          // { type: 'number', message: '商品重量由数字组成', trigger: 'blur' }
         ],
         goods_cat: [
           { required: true, message: '商品分类不能为空', trigger: 'blur' }
@@ -46,12 +46,11 @@ export default {
       },
 
       activeName: '1',
-      isAutoUp: true,
+
       headers: {
         Authorization: localStorage.getItem('token')
-      },
+      }
 
-      goods_introduce: ''
     }
   },
 
@@ -61,16 +60,6 @@ export default {
 
   components: {
     quillEditor
-  },
-
-  computed: {
-    editor () {
-      return this.$refs.myQuillEditor.quill
-    }
-
-    // contentCode () {
-    //   return hljs.highlightAuto(this.goods_introduce).value
-    // }
   },
 
   methods: {
@@ -99,32 +88,41 @@ export default {
         return e.pic !== file.response.data.tmp_path
       })
     },
-    handlePreview (file) {
-      console.log(file)
-    },
+
     handleExceed (files, fileList) {
       this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
     },
+
     beforeRemove (file, fileList) {
       return this.$confirm(`确定移除${file.name}？`)
     },
 
-    afterUpLoad (res) {
-      console.log(res)
+    handleSuccess (res) {
+      // console.log(res)
       this.addGoodsForm.pics.push({ pic: res.data.tmp_path })
     },
 
     submitAddGoods () {
       this.$refs.addGoodsForm.validate((valid) => {
         if (valid) {
-          this.addGoodsForm.goods_introduce = this.goods_introduce
           this.axios
-            .post('goods', this.addGoodsForm)
+            .post('goods', {
+              ...this.addGoodsForm,
+              goods_cat: this.addGoodsForm.goods_cat.join(',')
+            })
             .then(res => {
               console.log(res)
+              const { meta } = res.data
+              if (meta.status === 201) {
+                this.$router.push('/goods')
+                this.$message({
+                  message: meta.msg,
+                  type: 'success'
+                })
+              }
             })
         } else {
-          console.log('error submit!!')
+          this.$message.error('表单验证失败，请填写规范')
           return false
         }
       })
