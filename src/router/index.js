@@ -2,16 +2,25 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Nprogress from 'nprogress'
-import 'nprogress/nprogress.css'
+// import 'nprogress/nprogress.css'
 
 import Login from '@/components/login/Login'
-import Home from '@/components/home/Home'
-import UserList from '@/components/userlist'
-import RolesList from '@/components/roleslist'
-import Rightlist from '@/components/rightlist'
-import Categories from '@/components/categories'
-import Goods from '@/components/goods'
-import GoodsAdd from '@/components/goods-add'
+
+// import Home from '@/components/home/Home'
+// import UserList from '@/components/userlist'
+// import RolesList from '@/components/roleslist'
+// import Rightlist from '@/components/rightlist'
+// import Categories from '@/components/categories'
+// import Goods from '@/components/goods'
+// import GoodsAdd from '@/components/goods-add'
+
+const Home = () => import(/* webpackChunkName: 'home' */'@/components/home/Home')
+const UserList = () => import(/* webpackChunkName: 'user' */'@/components/userlist')
+const RolesList = () => import(/* webpackChunkName: 'roles' */'@/components/roleslist')
+const Rightlist = () => import(/* webpackChunkName: 'rights' */'@/components/rightlist')
+const Categories = () => import(/* webpackChunkName: 'categories' */'@/components/categories')
+const Goods = () => import(/* webpackChunkName: 'goods' */'@/components/goods')
+const GoodsAdd = () => import(/* webpackChunkName: 'goods' */'@/components/goods-add')
 
 Vue.use(Router)
 
